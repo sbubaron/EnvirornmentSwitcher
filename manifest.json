@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "Environment Switcher",
+  "description": "This extension will switch between environments of a site you are working on, quickly switch from prod to dev, dev to prod or any other configured environments",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ]
+}
