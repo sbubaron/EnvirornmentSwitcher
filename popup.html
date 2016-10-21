@@ -17,7 +17,8 @@
         white-space: pre;
         text-overflow: ellipsis;
         overflow: hidden;
-        max-width: 400px;
+        max-width: 500px;
+        width: 500px;
       }
     </style>
 
@@ -30,6 +31,13 @@
     <script src="popup.js"></script>
   </head>
   <body>
+    <div id="contexts">
+      Switch To:
+      <button id="local">LOCAL</button>
+      <button id="dev">DEV</button>
+      <button id="stage">STAGE</button>
+      <button id="prod">PROD</button>
+    </div>
     <div id="status"></div>
   </body>
 </html>

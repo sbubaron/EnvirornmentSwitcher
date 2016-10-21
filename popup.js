@@ -48,33 +48,154 @@ function getCurrentTabUrl(callback) {
   // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
+function navTo(url) {
+  // Put the image URL in Google search.
+
+
+    chrome.tabs.update({
+      url: url
+    });
+
+    window.close();
+
+
+}
+
+function navToLocal() {
+
+  navTo(document.localDevURL);
+}
+
+function navToDev() {
+  navTo(document.devURL);
+}
+
+function navToStage() {
+  navTo(document.stageURL);
+}
+
+function navToProd() {
+  navTo(document.prodURL);
+}
 
 
 function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
 
+function get_context_options(url, project, source) {
+
+
+  if(source == 'localDev') {
+      document.getElementById('local').style.display = 'none';
+
+      document.localDevURL = url.replace(project.localDev, project.localDev)
+      document.devURL = url.replace(project.localDev, project.dev)
+      document.stageURL = url.replace(project.localDev, project.stage)
+      document.prodURL = url.replace(project.localDev, project.prod)
+
+  }
+  else if(source == 'dev') {
+      document.getElementById('dev').style.display = 'none';
+
+      document.localDevURL = url.replace(project.dev, project.localDev)
+      document.devURL = url.replace(project.dev, project.dev)
+      document.stageURL = url.replace(project.dev, project.stage)
+      document.prodURL = url.replace(project.dev, project.prod)
+
+  }
+  else if(source == 'stage') {
+      document.getElementById('stage').style.display = 'none';
+      document.localDevURL = url.replace(project.stage, project.localDev)
+      document.devURL = url.replace(project.stage, project.dev)
+      document.stageURL = url.replace(project.stage, project.stage)
+      document.prodURL = url.replace(project.stage, project.prod)
+  }
+  else if(source == 'prod') {
+      document.getElementById('prod').style.display = 'none';
+
+      document.localDevURL = url.replace(project.prod, project.localDev)
+      document.devURL = url.replace(project.prod, project.dev)
+      document.stageURL = url.replace(project.prod, project.stage)
+      document.prodURL = url.replace(project.prod, project.prod)
+  }
+
+}
+
+function getOption(url, name, source, dest) {
+  var opt = new Object();
+  opt.name = name;
+  opt.url = url.replace(source, dest);
+
+  return opt;
+}
+
+
+
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
-  getCurrentTabUrl(function(url) {
-    // Put the image URL in Google search.
-    if(url.indexOf("it.stonybrook.edu") >= 0) {
-      url = url.replace("it.stonybrook.edu", "it.doitsbu.localvm.stonybrook.edu");
-      renderStatus("Switching to dev");
+  var projects = new Array();
+  chrome.storage.sync.get({
+    projects: []
+    //likesColor: true
+  }, function(items) {
+    projects = items.projects;
+    console.log(projects);
+    var bFound = false;
+    getCurrentTabUrl(function(url) {
+      console.log(url);
+      for(var i = 0; i < projects.length; i++) {
 
-      chrome.tabs.update({
-        url: url
-      });
-    }
-    else if(url.indexOf("it.doitsbu.localvm.stonybrook.edu") >= 0) {
-      url = url.replace("it.doitsbu.localvm.stonybrook.edu", "it.stonybrook.edu");
-      renderStatus("Switching to prod");
+        prj = projects[i];
+        console.log(prj);
 
-      chrome.tabs.update({
-        url: url
-      });
-    }
-    else {
-      renderStatus("No Environment Context Specified");
-    }
+
+        if(url.indexOf(prj.localDev) >= 0) {
+          bFound = true;
+
+          get_context_options(url, prj, 'localDev');
+
+        }
+        else if(url.indexOf(prj.dev) >= 0) {
+          bFound = true;
+          get_context_options(url, prj, 'dev');
+        }
+        else if(url.indexOf(prj.stage) >= 0) {
+          bFound = true;
+          get_context_options(url, prj, 'stage');
+        }
+        else if(url.indexOf(prj.prod) >= 0) {
+          bFound = true;
+          get_context_options(url, prj, 'prod');
+        }
+
+        if(bFound) {
+          document.project = prj;
+          i = projects.length;
+        }
+      }
+
+      if(!bFound) {
+        document.getElementById('contexts').style.display = 'none';
+        renderStatus("URL not found in any projects");
+      }
+      else {
+        document.getElementById('contexts').style.display = 'block';
+      }
+
+
+    });
   });
+
+  document.getElementById('local').addEventListener('click', navToLocal);
+  document.getElementById('dev').addEventListener('click', navToDev);
+  document.getElementById('stage').addEventListener('click', navToStage);
+  document.getElementById('prod').addEventListener('click', navToProd);
+
+
 });

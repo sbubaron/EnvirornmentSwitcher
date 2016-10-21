@@ -4,6 +4,13 @@
   <title>My Test Extension Options</title>
   <style>
     body: { padding: 10px; }
+    #context-wrap {
+      margin-bottom: 1em;
+    }
+
+    #context-wrap button {
+      margin: 1em 0;
+    }
   </style>
 </head>
 
@@ -17,15 +24,18 @@
     <h3>New Project:</h3> <input type="textbox" id="newProject"> <button id="addProject">Add Project</button><br />
 
 
+    <div id="context-wrap">
+      <h3>Contexts:</h3>
+      Local Dev: <input type="textbox" id="localDev"><br />
+      Dev: <input type="textbox" id="dev"><br />
+      Stage: <input type="textbox" id="stage"><br />
+      Prod: <input type="textbox" id="prod"><br />
+      <button id="save">Update Contexts</button>
+    </div>
 
-  <h3>Contexts:</h3>
-  Local Dev: <input type="textbox" id="localDev"><br />
-  Dev: <input type="textbox" id="dev"><br />
-  Stage: <input type="textbox" id="stage"><br />
-  Prod: <input type="textbox" id="prod"><br />
 
-  <button id="save">Save</button>
   <div id="status"></div>
+    <button id="reset">Reset</button>
   <script src="options.js"></script>
 </body>
 </html>
